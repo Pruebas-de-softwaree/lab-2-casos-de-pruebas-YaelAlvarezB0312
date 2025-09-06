@@ -1,4 +1,6 @@
 
+import time  
+
 class OnlinePurchase:
     def __init__(self):
         self.valid_coupons = {"DISCOUNT10": 0.15, "DISCOUNT30": 0.30}
@@ -26,9 +28,9 @@ class OnlinePurchase:
         return isinstance(address, str) and len(address.strip()) > 5
 
     def process_purchase(self, cart, coupon, address):
+        start = time.time()   # ⏱ medir inicio
+
         print("Processng purcase...")
-
-
 
         for item, quantity in cart.items():
             if item not in self.items:
@@ -45,11 +47,18 @@ class OnlinePurchase:
 
         cart_summary = "\n".join([f"{item}: {quantity} x ${self.items[item]}" for item, quantity in cart.items()])
 
+        end = time.time()   # ⏱ medir fin
+        elapsed = end - start
+
+        if elapsed > 2:
+            return " Error: System response exceeded 2 seconds."
+
         return (f"Purchase completed.\n"
                 f"Itms:\n{cart_summary}\n"
                 f"Coupon: {coupon or 'None'}\n"
                 f"Shipping Addresss: {address}\n"
-                f"Total to payy: ${total_with_discount:.2f}")
+                f"Total to payy: ${total_with_discount:.2f}\n"
+                f"Response time: {elapsed:.4f} seconds")
 
 
 if __name__ == "__main__":
@@ -61,6 +70,6 @@ if __name__ == "__main__":
     }
     coupon = "DISCOUNT10"
     address = "playa linda 333"
-    purchase_1=purchase.process_purchase(cart, coupon, address)
+    purchase_1 = purchase.process_purchase(cart, coupon, address)
     print(purchase_1)
     print("END")
