@@ -1,6 +1,3 @@
-
-import time  
-
 class OnlinePurchase:
     def __init__(self):
         self.valid_coupons = {"DISCOUNT10": 0.15, "DISCOUNT30": 0.30}
@@ -19,7 +16,11 @@ class OnlinePurchase:
         }
 
     def validate_quantity(self, quantity):
-        return isinstance(quantity, int) and quantity > 0
+        if not isinstance(quantity, int):
+            return False
+        if quantity <= 0:
+            return False
+        return True
 
     def validate_coupon(self, code):
         return code in self.valid_coupons or code == ""
@@ -28,9 +29,7 @@ class OnlinePurchase:
         return isinstance(address, str) and len(address.strip()) > 5
 
     def process_purchase(self, cart, coupon, address):
-        start = time.time()   # ⏱ medir inicio
-
-        print("Processng purcase...")
+        print("Processing purchase...")
 
         for item, quantity in cart.items():
             if item not in self.items:
@@ -47,29 +46,23 @@ class OnlinePurchase:
 
         cart_summary = "\n".join([f"{item}: {quantity} x ${self.items[item]}" for item, quantity in cart.items()])
 
-        end = time.time()   # ⏱ medir fin
-        elapsed = end - start
-
-        if elapsed > 2:
-            return " Error: System response exceeded 2 seconds."
-
         return (f"Purchase completed.\n"
-                f"Itms:\n{cart_summary}\n"
+                f"Items:\n{cart_summary}\n"
                 f"Coupon: {coupon or 'None'}\n"
-                f"Shipping Addresss: {address}\n"
-                f"Total to payy: ${total_with_discount:.2f}\n"
-                f"Response time: {elapsed:.4f} seconds")
+                f"Shipping Address: {address}\n"
+                f"Total to pay: ${total_with_discount:.2f}")
 
 
 if __name__ == "__main__":
     purchase = OnlinePurchase()
 
     cart = {
-        "Mouse": 2,
-        "Webcam": 3
+        "Mouse": 0,          
+        "Keyboard": -2, 
+        "Webcam": 1.5        
     }
-    coupon = "DISCOUNT10"
-    address = "playa linda 333"
+    coupon = ""
+    address = "Calle Falsa 123"
     purchase_1 = purchase.process_purchase(cart, coupon, address)
     print(purchase_1)
     print("END")
